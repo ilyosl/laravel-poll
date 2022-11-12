@@ -3,6 +3,7 @@ import Dashboard from '../view/Dashboard.vue'
 import Login from '../view/Login.vue'
 import Register from '../view/Register.vue'
 import Poll from '../view/Poll.vue'
+import PollView from '../view/PollView.vue'
 import DefaultLayout from '../components/DefaultLayout.vue'
 import AuthLayout from '../components/AuthLayout.vue'
 import store from '../store'
@@ -15,6 +16,8 @@ const routes = [
         children: [
             {path: '/dashboard', name:'Dashboard', component: Dashboard},
             {path: '/poll', name:'Poll', component: Poll},
+            { path: '/poll/create', name: 'pollCreate', component: PollView },
+            { path: '/poll/:id', name: 'pollView', component: PollView },
         ]
     },
     {
