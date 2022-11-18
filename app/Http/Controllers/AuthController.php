@@ -4,61 +4,41 @@
 namespace App\Http\Controllers;
 
 
+use App\Http\Requests\LoginUserRequest;
+use App\Http\Requests\RegisterUserRequest;
 use App\Models\User;
+use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\Password;
 
 class AuthController extends Controller
 {
-    public function register(Request $request){
+    public function register(RegisterUserRequest $request, UserService $service){
 
-        $data = $request->validate([
-            'full_name' => 'required|string',
-            'email' => 'required|email|string|unique:users,email',
-            'password' => [
-                'required',
-                'confirmed',
-                Password::min(4)
-                    //->mixedCase()->numbers()->symbols()
-            ]
-        ]);
+        $data = $request->validated();
 
-        /** @var \App\Models\User $user **/
+        $user = $service->StoreNewUser($data);
 
-        $user = User::create([
-            'name'=>$data['full_name'],
-            'email'=>$data['email'],
-            'password' => bcrypt($data['password'])
-        ]);
-
-        $token = $user->createToken('main')->plainTextToken;
+        $token = $service->GetTokenUser($user);
 
         return response([
             'user' => $user,
             'token' => $token
         ]);
     }
-    public function login(Request $request){
-        $credentials = $request->validate([
-            'email' => 'required|email|string',
-            'password' => [
-                'required'
-            ],
-            'remember'=>'boolean'
-        ]);
+    public function login(LoginUserRequest $request, UserService $service){
 
+        $credentials = $request->validated();
         $remember = $credentials['remember'] ?? false;
         unset($credentials['remember']);
 
-        if(!Auth::attempt($credentials, $remember)) {
+        if(!($user = $service->isAuth($credentials, $remember))){
             return response([
                 'error' => 'Credentials are not correct'
             ], 422);
         }
-        $user = Auth::user();
-
-        $token = $user->createToken('main')->plainTextToken;
+        $token = $service->GetTokenUser($user);
 
         return response([
             'user' => $user,
