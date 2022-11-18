@@ -15,17 +15,8 @@ use Illuminate\Validation\Rules\Password;
 class AuthController extends Controller
 {
     public function register(RegisterUserRequest $request, UserService $service){
-
-        $data = $request->validated();
-
-        $user = $service->StoreNewUser($data);
-
-        $token = $service->GetTokenUser($user);
-
-        return response([
-            'user' => $user,
-            'token' => $token
-        ]);
+        $user = $service->StoreNewUser($request->validated());
+        return response($user);
     }
     public function login(LoginUserRequest $request, UserService $service){
 

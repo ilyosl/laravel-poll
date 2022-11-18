@@ -17,11 +17,16 @@ class UserService
             'email'=>$data['email'],
             'password' => bcrypt($data['password'])
         ]);
-
-        return $user;
+        $token =  $user->createToken('main')->plainTextToken;
+        return [
+            'user' => $user,
+            'token' => $token
+        ];
     }
     public  function GetTokenUser(User $user){
-        return $user->createToken('main')->plainTextToken;
+        $token =  $user->createToken('main')->plainTextToken;
+
+        return [$user, $token];
     }
 
     public function isAuth($credentials, $remember) {
