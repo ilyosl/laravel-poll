@@ -17,7 +17,7 @@ class UserService
             'email'=>$data['email'],
             'password' => bcrypt($data['password'])
         ]);
-        $token =  $user->createToken('main')->plainTextToken;
+        $token =  $this->GetTokenUser($user);
         return [
             'user' => $user,
             'token' => $token
@@ -26,7 +26,7 @@ class UserService
     public  function GetTokenUser(User $user){
         $token =  $user->createToken('main')->plainTextToken;
 
-        return [$user, $token];
+        return $token;
     }
 
     public function isAuth($credentials, $remember) {

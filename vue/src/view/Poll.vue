@@ -66,6 +66,8 @@ import store from '../store';
 const polls = computed(() => store.state.poll)
 
 function deletePoll(poll) {
-   console.log(poll);
+   if(confirm('Are you sure ?')){
+      
+   }
 }
 </script>

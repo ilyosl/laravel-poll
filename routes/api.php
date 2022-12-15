@@ -19,6 +19,7 @@ Route::middleware('auth:sanctum')->group(function () {
         return $request->user();
     });
     Route::post('/logout',[AuthController::class, 'logout']);
+    Route::apiResource('/poll', \App\Http\Controllers\PollController::class);
 });
 Route::controller(AuthController::class)->group(function () {
     Route::post('/register', 'register');
