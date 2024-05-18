@@ -16,7 +16,7 @@ class AuthController extends Controller
 {
     public function register(RegisterUserRequest $request, UserService $service){
         $user = $service->StoreNewUser($request->validated());
-        dd($user);
+        // dd($user);
         return response($user);
     }
     public function login(LoginUserRequest $request, UserService $service){

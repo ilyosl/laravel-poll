@@ -3,7 +3,7 @@ import axiosClient from '../axios'
 
 const tmpPoll = [
     {
-        id: 100, 
+        id: 100,
         title: 'Youtube channel content',
         slug: 'youtube-channel-content',
         status: 'draft',
@@ -14,7 +14,7 @@ const tmpPoll = [
         expire_date: '2022-11-30 09:00:00',
         questions: [
             {
-                id: 1, 
+                id: 1,
                 type: 'select',
                 question: 'From which region are you ?',
                 description: null,
@@ -28,26 +28,26 @@ const tmpPoll = [
                 }
             },
             {
-                id: 2, 
+                id: 2,
                 type: 'checkbox',
                 question: 'Which video games do you want to see on my channel?',
                 description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
                 data: {
                     options: [
                         {
-                            id: 1, 
+                            id: 1,
                             text: 'Pubg'
                         },
                         {
-                            id: 2, 
+                            id: 2,
                             text: 'Counter Strike'
                         },
                         {
-                            id: 3, 
+                            id: 3,
                             text: 'Fifa 22'
                         },
                         {
-                            id: 4, 
+                            id: 4,
                             text: 'Pubg mobile'
                         }
                     ]
@@ -110,7 +110,7 @@ const store = createStore({
         register({commit}, user) {
             return axiosClient.post('/register', user)
                 .then(({ data }) => {
-                    commit('setUser', user)
+                    commit('setUser', data)
                     return data
                 })
         },
