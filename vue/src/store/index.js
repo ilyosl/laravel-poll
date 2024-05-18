@@ -11,7 +11,7 @@ const tmpPoll = [
         description: 'My name is Ilyos. <br> I am a Web Developer with 9+ years of experience, free educational content Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
         created_at: '2022-11-12 09:00:00',
         updated_at: '2022-11-12 09:00:00',
-        expire_date: '2022-11-30 09:00:00',
+        expire_date: '30/11/2022 09:00:00',
         questions: [
             {
                 id: 1,
@@ -104,6 +104,7 @@ const store = createStore({
             token: localStorage.getItem("token")
         },
         poll: [...tmpPoll],
+        questionTypes:["text","select","radio", "checkbox", "textarea"],
     },
     getters: {},
     actions: {
@@ -128,7 +129,6 @@ const store = createStore({
         }
     },
     mutations: {
-
         logout: (state) => {
             state.user.data = {}
             state.user.token = null

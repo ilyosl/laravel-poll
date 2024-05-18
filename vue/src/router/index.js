@@ -14,8 +14,8 @@ const routes = [
         component: DefaultLayout,
         meta: {requiresAuth: true},
         children: [
-            {path: '/dashboard', name:'Dashboard', component: Dashboard},
-            {path: '/poll', name:'Poll', component: Poll},
+            { path: '/dashboard', name:'Dashboard', component: Dashboard},
+            { path: '/poll', name:'Poll', component: Poll},
             { path: '/poll/create', name: 'pollCreate', component: PollView },
             { path: '/poll/:id', name: 'pollView', component: PollView },
         ]
@@ -23,7 +23,7 @@ const routes = [
     {
         path: '/auth',
         redirect: '/login',
-        component: AuthLayout, 
+        component: AuthLayout,
         meta: {isGuest: true},
         children: [
             {
@@ -38,7 +38,7 @@ const routes = [
             },
         ]
     },
-   
+
 ]
 
 const router = createRouter({
@@ -56,4 +56,4 @@ router.beforeEach((to, from, next) => {
     }
 })
 
-export default router; 
+export default router;

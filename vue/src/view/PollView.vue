@@ -8,7 +8,7 @@
             </div>
         </template>
 
-        
+
         <form @submit.prevent = 'savePoll'>
             <div class="shadow sm:rounded-md sm:overflow-hidden">
                 <!-- Survey Fields -->
@@ -19,7 +19,7 @@
                             Image
                         </label>
                         <div class="mt-1 flex items-center">
-                            <img 
+                            <img
                                 v-if="model.image"
                                 :src="model.image"
                                 :alt="model.title"
@@ -32,7 +32,7 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20" class="w-[80%] h-[80%] text-gray-300">
                                     <path full-rule="evenodd" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
                                 </svg>
-                                
+
                             </span>
                             <button
                                     type="button"
@@ -150,11 +150,11 @@
                     </div>
                     <div v-for="(question, index) in model.questions" :key="question.id">
                         <QuestionEditor
-                        :question="question"
-                        :index="index"
-                        @change="questionChange"
-                        @addQuestion="addQuestion"
-                        @deleteQuestion="deleteQuestion"
+                            :question="question"
+                            :index="index"
+                            @change="questionChange"
+                            @addQuestion="addQuestion"
+                            @deleteQuestion="deleteQuestion"
                         />
                     </div>
                 </div>
@@ -164,6 +164,7 @@
     </PageComponent>
 </template>
 <script setup>
+import { v4 as uuidv4 } from "uuid";
 import { ref } from 'vue';
 import store from '../store';
 import {useRoute} from 'vue-router';
@@ -187,10 +188,25 @@ if(route.params.id) {
     );
 }
 
-function addQuestion() {
-
+function addQuestion(index) {
+    const newQuestion = {
+        id: uuidv4(),
+        type: "text",
+        question: "",
+        description: null,
+        data:{}
+    }
+    model.value.questions.splice(index, 0, newQuestion);
 }
 function savePoll() {
 
+}
+function questionChange() {
+
+}
+function deleteQuestion(question) {
+    model.value.questions = model.value.questions.filter(
+        (q) => q !== question
+    )
 }
 </script>

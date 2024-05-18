@@ -4,8 +4,8 @@
       <h3 class="text-lg font-bold">
         {{ index + 1 }}. {{ model.question }}
       </h3>
-  
-  
+
+
       <div class="flex items-center">
         <!-- Add new question -->
         <button
@@ -39,7 +39,7 @@
           Add
         </button>
         <!--/ Add new question -->
-  
+
         <!-- Delete question -->
         <button
           type="button"
@@ -101,7 +101,7 @@
         />
       </div>
       <!--/ Question -->
-  
+
       <!-- Question Type -->
       <div class="mt-3 col-span-3">
         <label for="question_type" class="block text-sm font-medium text-gray-700"
@@ -133,7 +133,7 @@
       </div>
       <!--/ Question Type -->
     </div>
-  
+
     <!-- Question Description -->
     <div class="mt-3 col-span-9">
       <label
@@ -159,13 +159,13 @@
       />
     </div>
     <!--/ Question Description -->
-  
+
     <!-- Data -->
     <div>
       <div v-if="shouldHaveOptions()" class="mt-2">
         <h4 class="text-sm font-semibold mb-1 flex justify-between items-center">
           Options
-  
+
           <!-- Add new option -->
           <button
             type="button"
@@ -198,7 +198,7 @@
           </button>
           <!--/ Add new option -->
         </h4>
-  
+
         <div
           v-if="!model.data.options.length"
           class="text-xs text-gray-600 text-center py-3"
@@ -262,10 +262,10 @@
       </div>
     </div>
     <!--/ Data -->
-  
+
     <hr class="my-4" />
   </template>
-  
+
   <script setup>
   import { v4 as uuidv4 } from "uuid";
   import { computed, ref } from "@vue/reactivity";
@@ -313,7 +313,7 @@
   }
   // Emit the data change
   function dataChange() {
-    const data = model.value;
+    const data = JSON.parse(JSON.stringify(model.value));
     if (!shouldHaveOptions()) {
       delete data.data.options;
     }
@@ -326,5 +326,5 @@
     emit("deleteQuestion", props.question);
   }
   </script>
-  
+
   <style></style>
