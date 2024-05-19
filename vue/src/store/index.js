@@ -103,23 +103,41 @@ const store = createStore({
             data: {},
             token: localStorage.getItem("token")
         },
+        currentPoll: {
+          loading: false,
+          data: {}
+        },
         poll: [...tmpPoll],
         questionTypes:["text","select","radio", "checkbox", "textarea"],
     },
     getters: {},
     actions: {
+      getPoll({commit}, id) {
+        commit('setCurrentPollLoading', true);
+        return axiosClient.get(`/poll/${id}`).then((res)=>{
+          commit('setCurrentPoll', res.data);
+          commit('setCurrentPollLoading', false);
+          return res;
+        }).catch((err)=>{
+          commit('setCurrentPollLoading', false);
+          throw err;
+        })
+      },
+      deletePoll({}, id){
+        return axiosClient.delete(`/poll/${id}`);
+      },
       savePoll({commit}, poll){
         delete poll.image_url;
         let response;
-        console.log(poll);
+        // console.log(poll);
         if(poll.id){
           response = axiosClient.put(`/poll/${poll.id}`, poll).then((res)=>{
-            commit('updatePoll', res.data);
+            commit('setCurrentPoll', res.data);
             return res;
           });
         }else{
           response = axiosClient.post('/poll', poll).then((res)=>{
-            commit('savePoll', res.data);
+            commit('setCurrentPoll', res.data);
             return res;
           });
 
@@ -147,6 +165,12 @@ const store = createStore({
       }
     },
     mutations: {
+      setCurrentPollLoading: (state, loading) => {
+        state.currentPoll.loading = loading;
+      },
+      setCurrentPoll: (state, poll) => {
+        state.currentPoll.data = poll.data;
+      },
       savePoll: (state, poll) => {
         state.poll = [...state.poll, poll.data]
       },

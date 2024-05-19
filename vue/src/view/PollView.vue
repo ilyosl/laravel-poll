@@ -3,13 +3,33 @@
         <template v-slot:header>
             <div class="flex items-center justify-between">
                 <h1 class="text-3xl font-bold text-gray-900">
-                    {{ model.id ? model.title: "Create a poll"}}
+                    {{ route.params.id ? model.title: "Create a poll"}}
                 </h1>
+                <button
+                    v-if="route.params.id"
+                    type="button"
+                    @click="deletePoll()"
+                    class="py-2 px-3 text-white bg-red-500 rounded-md hover:bg-red-600"
+                >
+                    <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5 -mt-1 inline-block"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    >
+                    <path
+                        fill-rule="evenodd"
+                        d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                        clip-rule="evenodd"
+                    />
+                    </svg>
+                    Delete Poll
+                </button>
             </div>
         </template>
 
-
-        <form @submit.prevent = 'savePoll'>
+        <div v-if="loadingPoll" class="flex justify-center">Loading...</div>
+        <form v-else @submit.prevent = 'savePoll'>
             <div class="shadow sm:rounded-md sm:overflow-hidden">
                 <!-- Survey Fields -->
                 <div class="px-4 py-5 bg-white space-y-6 sm:p-6">
@@ -173,7 +193,7 @@
 </template>
 <script setup>
 import { v4 as uuidv4 } from "uuid";
-import { ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import store from '../store';
 import {useRoute, useRouter} from 'vue-router';
 import PageComponent from '../components/PageComponent.vue';
@@ -181,20 +201,28 @@ import QuestionEditor from "../components/editor/QuestionEditor.vue";
 
 const router = useRouter();
 const route = useRoute();
-
+const loadingPoll = computed(()=> store.state.currentPoll.loading);
 let model = ref({
     title: '',
     status: false,
     description: null,
-    image: null,
+    image_url: null,
     expire_date: null,
     questions: []
 })
 
+watch(
+  () => store.state.currentPoll.data,
+  (newVal, oldVal) => {
+    model.value = {
+      ...JSON.parse(JSON.stringify(newVal)),
+      status: !!newVal.status,
+    };
+  }
+);
+
 if(route.params.id) {
-    model.value = store.state.poll.find(
-        (p) => p.id == parseInt(route.params.id)
-    );
+    store.dispatch('getPoll', route.params.id);
 }
 
 function onImageChoose(ev) {
@@ -242,6 +270,17 @@ function deleteQuestion(question) {
     model.value.questions = model.value.questions.filter(
         (q) => q !== question
     )
+}
+function deletePoll() {
+    if(
+        confirm("Are you sure you want to delete this poll")
+    ){
+        store.dispatch('deletePoll', model.value.id).then(()=> {
+            router.push({
+                name: "Poll"
+            })
+        })
+    }
 }
 
 </script>
