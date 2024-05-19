@@ -15,10 +15,10 @@ class UpdatePollRequest extends FormRequest
      */
     public function authorize()
     {
-       /* $poll = $this->route('poll');
+        $poll = $this->route('poll');
         if ($this->user()->id !== $poll->user_id) {
             return false;
-        }*/
+        }
         return true;
     }
 
@@ -31,6 +31,7 @@ class UpdatePollRequest extends FormRequest
     {
         return [
             'title'=>'required|string|max:1000',
+            'image'=>'nullable|string',
             'user_id' => 'exists:users,id',
             'status' => 'required|boolean',
             'description' => 'nullable|string',

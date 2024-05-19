@@ -108,38 +108,67 @@ const store = createStore({
     },
     getters: {},
     actions: {
-        register({commit}, user) {
-            return axiosClient.post('/register', user)
-                .then(({ data }) => {
-                    commit('setUser', data)
-                    return data
-                })
-        },
-        login({commit}, user){
-           return axiosClient.post('/login', user)
-           .then(({data})=>{
-                commit('setUser', data)
-                return data
-           })
-        },
-        logout({commit}) {
-            return axiosClient.post('/logout').then(({data}) => {
-                commit('logout')
-            })
+      savePoll({commit}, poll){
+        delete poll.image_url;
+        let response;
+        console.log(poll);
+        if(poll.id){
+          response = axiosClient.put(`/poll/${poll.id}`, poll).then((res)=>{
+            commit('updatePoll', res.data);
+            return res;
+          });
+        }else{
+          response = axiosClient.post('/poll', poll).then((res)=>{
+            commit('savePoll', res.data);
+            return res;
+          });
+
         }
+        return response;
+      },
+      register({commit}, user) {
+          return axiosClient.post('/register', user)
+              .then(({ data }) => {
+                  commit('setUser', data)
+                  return data
+              })
+      },
+      login({commit}, user){
+          return axiosClient.post('/login', user)
+          .then(({data})=>{
+              commit('setUser', data)
+              return data
+          })
+      },
+      logout({commit}) {
+          return axiosClient.post('/logout').then(({data}) => {
+              commit('logout')
+          })
+      }
     },
     mutations: {
-        logout: (state) => {
-            state.user.data = {}
-            state.user.token = null
-            localStorage.removeItem('token')
-        },
-        setUser: (state, userData) => {
-            console.log(userData);
-            state.user.token = userData.token
-            state.user.data = userData.user
-            localStorage.setItem("token", userData.token)
-        }
+      savePoll: (state, poll) => {
+        state.poll = [...state.poll, poll.data]
+      },
+      updatePoll: (state, poll) => {
+        state.poll = state.poll.map((p) => {
+          if(p.id == poll.data.id){
+            return poll.data;
+          }
+          return p;
+        })
+      },
+      logout: (state) => {
+          state.user.data = {}
+          state.user.token = null
+          localStorage.removeItem('token')
+      },
+      setUser: (state, userData) => {
+          console.log(userData);
+          state.user.token = userData.token
+          state.user.data = userData.user
+          localStorage.setItem("token", userData.token)
+      }
     },
     modules: {}
 })

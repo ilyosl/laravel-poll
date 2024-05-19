@@ -11,7 +11,7 @@ class Poll extends Model
 {
     use HasFactory, HasSlug;
 
-    protected $fillable = ['user_id','title','slug','status','description','expire_date'];
+    protected $fillable = ['user_id','title','slug','status','description','expire_date','image'];
 
     public function getSlugOptions(): SlugOptions
     {

@@ -20,8 +20,8 @@
                         </label>
                         <div class="mt-1 flex items-center">
                             <img
-                                v-if="model.image"
-                                :src="model.image"
+                                v-if="model.image_url"
+                                :src="model.image_url"
                                 :alt="model.title"
                                 class="w-64 h-48 object-cover"
                             />
@@ -160,6 +160,14 @@
                 </div>
 
             </div>
+            <div class="px-4 py-3 bg-gray-50 text-right sm:px-6">
+                <button
+                    type="submit"
+                    class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                >
+                    Save
+                </button>
+            </div>
         </form>
     </PageComponent>
 </template>
@@ -167,10 +175,11 @@
 import { v4 as uuidv4 } from "uuid";
 import { ref } from 'vue';
 import store from '../store';
-import {useRoute} from 'vue-router';
+import {useRoute, useRouter} from 'vue-router';
 import PageComponent from '../components/PageComponent.vue';
 import QuestionEditor from "../components/editor/QuestionEditor.vue";
 
+const router = useRouter();
 const route = useRoute();
 
 let model = ref({
@@ -188,6 +197,21 @@ if(route.params.id) {
     );
 }
 
+function onImageChoose(ev) {
+    const file = ev.target.files[0];
+
+    const reader = new FileReader();
+    reader.onload = ()=> {
+
+      // for send to backend
+      model.value.image = reader.result;
+
+      // for display
+      model.value.image_url = reader.result;
+    };
+    reader.readAsDataURL(file);
+}
+
 function addQuestion(index) {
     const newQuestion = {
         id: uuidv4(),
@@ -199,14 +223,25 @@ function addQuestion(index) {
     model.value.questions.splice(index, 0, newQuestion);
 }
 function savePoll() {
-
+    store.dispatch('savePoll', model.value).then(({data}) => {
+        router.push({
+            name: 'pollView',
+            params: {id: data.data.id}
+        })
+    })
 }
-function questionChange() {
-
+function questionChange(question) {
+    model.value.questions = model.value.questions.map((q)=>{
+        if(q.id === question.id){
+            return JSON.parse(JSON.stringify(question));
+        }
+        return q;
+    })
 }
 function deleteQuestion(question) {
     model.value.questions = model.value.questions.filter(
         (q) => q !== question
     )
 }
+
 </script>
