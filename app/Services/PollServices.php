@@ -1,6 +1,4 @@
 <?php
-
-
 namespace App\Services;
 
 
@@ -37,8 +35,7 @@ class PollServices
             if($poll->exists) {
                 if($poll->image && isset($data['image'])){
 
-                    $absoulutPath = public_path($poll->image);
-                    File::delete($absoulutPath);
+                    $this->deleteImage($poll->image);
 
                     $poll->image = $data['image'];
                 }
@@ -97,6 +94,9 @@ class PollServices
     public function destroyPoll(User $user, Poll $poll) {
         if($this->checkAccessUser($user, $poll)){
             try {
+                if($poll->image){
+                    $this->deleteImage($poll->image);
+                }
                 $poll->delete();
             }
             catch (\Exception $e) {
@@ -105,5 +105,10 @@ class PollServices
         }else{
             return abort(403, "Unauthorized action");
         }
+    }
+
+    private function deleteImage($file_path)
+    {
+        File::delete(public_path($file_path));
     }
 }
